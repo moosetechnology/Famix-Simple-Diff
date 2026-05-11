@@ -5,5 +5,9 @@ SmalltalkCISpec {
       #directory : '',
       #onConflict : #useIncoming
     }
-  ]
+  ],
+
+  #preTesting : SCICustomScript  {
+    #path: 'scripts/createModels.st'
+  }
 }
