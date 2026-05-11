@@ -31,7 +31,7 @@ FamixSimpleDiffTest >> testClassesWithDifferentNamesAreNotEqual [
 	entity2 := mainModel2 entityNamed: 'some.thing.whatever.MainClass'.
 	entity2 name: 'NewName'. 
 	
-	self assert: (sd compareEntity: entity1 to: entity2) equals: false
+	self assert: (sd compareEntity: entity1 to: entity2) equals: false 
 ]
 
 { #category : 'tests' }
