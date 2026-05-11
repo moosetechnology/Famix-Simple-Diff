@@ -15,7 +15,7 @@ FamixSimpleDiffAutoTest >> setUp [
 	super setUp.
 
 	"fix here to limit window's performances problems"
-	self timeLimit: 15 seconds.
+	self timeLimit: 15 seconds. 
 	"Put here a common initialization logic for tests"
 	mainModel1 := TestJavaModelBuilder loadMainModel.
 	mainModel2 := TestJavaModelBuilder loadMainModel.
