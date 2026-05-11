@@ -7,6 +7,7 @@ on:
       - creating_CI
       - differences-list
       - differences-list-with-meta-model
+      - spliting_auto_and_manual_models_for_tests
 
   pull_request:
     branches: 
@@ -14,6 +15,7 @@ on:
       - creating_CI
       - differences-list
       - differences-list-with-meta-model
+      - spliting_auto_and_manual_models_for_tests
 
 jobs:
   test:
