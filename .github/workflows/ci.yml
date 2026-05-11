@@ -25,6 +25,8 @@ jobs:
         smalltalk: [ Moose64-13 ]
     name: ${{ matrix.smalltalk }}
 
+    with:
+      pre-upload-script: "TestJavaModelBuilder loadMainModel. TestJavaModelBuilder loadLibraryModel"
     steps:
       - uses: actions/checkout@v4
         
@@ -43,5 +45,4 @@ jobs:
           name: exported-json-models
           path: "**/*.json"
     
-    with:
-      pre-upload-script: "TestJavaModelBuilder loadMainModel. TestJavaModelBuilder loadLibraryModel"
+    
