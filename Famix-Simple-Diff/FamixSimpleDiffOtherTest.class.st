@@ -4,11 +4,6 @@ This test class contains all the test cases that do not require building models.
 Class {
 	#name : 'FamixSimpleDiffOtherTest',
 	#superclass : 'TestCase',
-	#instVars : [
-		'mainModel1',
-		'mainModel2',
-		'libraryModel'
-	],
 	#category : 'Famix-Simple-Diff',
 	#package : 'Famix-Simple-Diff'
 }
