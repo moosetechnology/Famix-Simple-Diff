@@ -1,3 +1,6 @@
+"
+This test class contains all the test cases focused on validating the difference objects themselves, and not the algorithms.
+"
 Class {
 	#name : 'FamixSimpleDifferenceTest',
 	#superclass : 'TestCase',
