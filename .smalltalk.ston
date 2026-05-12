@@ -3,7 +3,7 @@ SmalltalkCISpec {
     SCIMetacelloLoadSpec {
       #baseline : 'FamixSimpleDiff',
       #directory : '',
-      #onConflict : #useIncoming,
+      #onConflict : #useIncoming
     }
   ]
 }

@@ -1,10 +1,34 @@
-# This workflows runs your tests as specified in your .smalltalk.ston configuration file.
+name: Famix-Simpl-Diff-CI
 
-name: Run tests
+on:
+  push:
+    branches:
+      - main
+      - differences-list
+      - differences-list-with-meta-model
+      - spliting_auto_and_manual_models_for_tests
 
-on: [ push, pull_request ]
+  pull_request:
+    branches:
+      - main
+      - differences-list
+      - differences-list-with-meta-model
 
 jobs:
-  run:
-    uses: moosetechnology/.github/.github/workflows/run-tests.yml@main
-    secrets: inherit
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        smalltalk: [ Moose64-13 ]
+    name: ${{ matrix.smalltalk }}
+
+    steps:
+      - uses: actions/checkout@v4
+       
+      - uses: hpi-swa/setup-smalltalkCI@v1
+        with:
+          smalltalk-image: ${{ matrix.smalltalk }}
+         
+      - run: smalltalkci -s ${{ matrix.smalltalk }}
+        shell: bash
+        timeout-minutes: 10
