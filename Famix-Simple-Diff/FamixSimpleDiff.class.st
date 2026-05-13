@@ -32,9 +32,9 @@ FamixSimpleDiff >> compareEntity: aFamixEntity to: otherFamixEntity [
 			^ self fail ].
 
 	"Comparing properties using Moose meta models" 
-	"We focus on entity with a primitive type (Boolean, Number, String). Object type represent relations"
+	"We focus on entity with a primitive type (Boolean, Number, String), and we exclude derived propeties to not have differences repetitions" 
 	properties := aFamixEntity mooseDescription allProperties select: [ :property | 
-			property type isPrimitive].
+			property type isPrimitive and: [property isDerived not] ].
 
 	"we read property values, and create a difference if they are not equals"
 	properties do: [ :p |
