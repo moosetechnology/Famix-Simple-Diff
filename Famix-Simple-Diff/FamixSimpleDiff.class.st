@@ -84,17 +84,17 @@ FamixSimpleDiff >> compareModel: aFamixJavaModel to: aFamixJavaModel2 [
 ]
 
 { #category : 'comparing' }
-FamixSimpleDiff >> compareRelation: aFMRelationSlot from: aFamixEntity to: otherFamixEntity [
+FamixSimpleDiff >> compareRelation: aRelationDescription from: aFamixEntity to: otherFamixEntity [
 
 	| val1 val2 sortBlock |
-	aFMRelationSlot isToOne
-		ifTrue: [
-				val1 := aFMRelationSlot read: aFamixEntity.
-				val2 := aFMRelationSlot read: otherFamixEntity ]
-		ifFalse: [
+	aRelationDescription isMultivalued
+		ifFalse: ["toOne relation"
+				val1 := aRelationDescription getRawFrom: aFamixEntity.
+				val2 := aRelationDescription getRawFrom: otherFamixEntity ]
+		ifTrue: ["toMany relation"
 				| rejectBlock |
-				val1 := (aFMRelationSlot read: aFamixEntity) asOrderedCollection.
-				val2 := (aFMRelationSlot read: otherFamixEntity) asOrderedCollection.
+				val1 := (aRelationDescription getRawFrom: aFamixEntity) asOrderedCollection.
+				val2 := (aRelationDescription getRawFrom: otherFamixEntity) asOrderedCollection.
 
 				sortBlock := val1
 					             ifEmpty: [ self sortBlock ]
@@ -112,13 +112,13 @@ FamixSimpleDiff >> compareRelation: aFMRelationSlot from: aFamixEntity to: other
 	This guards for that..."
 	val1 == val2 ifTrue: [ ^ true ].
 
-	^ aFMRelationSlot isToOne
-		  ifTrue: [
+	^ aRelationDescription isMultivalued
+		  ifFalse: [
 			  self
 				  compareToOneRelation: val1
 				  actual: val2
 				  target: otherFamixEntity ]
-		  ifFalse: [
+		  ifTrue: [
 			  self
 				  compareToManyRelation: val1
 				  actual: val2
