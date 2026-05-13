@@ -36,18 +36,18 @@ FamixSimpleDiff >> compareEntity: aFamixEntity to: otherFamixEntity [
 	properties := aFamixEntity mooseDescription allProperties select: [ :property | 
 			property type isPrimitive].
 
+	"we read property values, and create a difference if they are not equals"
 	properties do: [ :p |
-			(p read: aFamixEntity) = (p read: otherFamixEntity) ifFalse: [
-					| prop1 prop2 |
-					prop1 := p read: aFamixEntity.
-					prop2 := p read: otherFamixEntity.
-
-					diff := FamixSimpleDifference
-						        createPropertyChanged: otherFamixEntity
-						        expectedValue: prop1
-						        actualValue: prop2.
-					self addDifference: diff.
-					isEquals := false ] ].
+		| property1 property2 |
+		property1 := p getRawFrom: aFamixEntity.
+		property2 := p getRawFrom: otherFamixEntity.
+		property1 = property2 ifFalse: [
+				diff := FamixSimpleDifference
+					        createPropertyChanged: otherFamixEntity
+					        expectedValue: property1
+					        actualValue: property2.
+				self addDifference: diff.
+				isEquals := false ] ].
 
 	"Comparing relations (slots with famix values)"
 	"We exclude source anchors because they are not relevant to model comparison"
