@@ -51,11 +51,12 @@ FamixSimpleDiff >> compareEntity: aFamixEntity to: otherFamixEntity [
 				self addDifference: diff.
 				isEquals := false ] ].
 
-	"Comparing relations (slots with famix values)"
-	"We exclude source anchors because they are not relevant to model comparison"
-	relations := aFamixEntity class allSlots select: [ :slot |
-		             slot isFMRelationSlot and: [
-			             slot name ~= 'sourceAnchor' ] ].
+	"Comparing relations using Moose meta models"
+	"We focus on non primitive property (objects), and we exclude source anchors and derived property because they are not relevant to model comparison"
+	relations := aFamixEntity mooseDescription allProperties select: [ :property |
+			             property type isPrimitive not and: [
+				             property isDerived not and: [
+					             property name ~= 'sourceAnchor' ] ] ].
 
 	relations do: [ :r |
 			(self compareRelation: r from: aFamixEntity to: otherFamixEntity)
