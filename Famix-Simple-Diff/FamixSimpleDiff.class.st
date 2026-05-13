@@ -31,7 +31,7 @@ FamixSimpleDiff >> compareEntity: aFamixEntity to: otherFamixEntity [
 			self addDifference: diff.
 			^ self fail ].
 
-	"Comparing properties (slots with non-famix values)"
+	"Comparing properties (slots with non-famix values)" 
 	properties := aFamixEntity class allSlots select: [ :slot |
 		              slot class = FMProperty ].
 
