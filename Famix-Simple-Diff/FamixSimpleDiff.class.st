@@ -31,9 +31,10 @@ FamixSimpleDiff >> compareEntity: aFamixEntity to: otherFamixEntity [
 			self addDifference: diff.
 			^ self fail ].
 
-	"Comparing properties (slots with non-famix values)" 
-	properties := aFamixEntity class allSlots select: [ :slot |
-		              slot class = FMProperty ].
+	"Comparing properties using Moose meta models" 
+	"We focus on entity with a primitive type (Boolean, Number, String). Object type represent relations"
+	properties := aFamixEntity mooseDescription allProperties select: [ :property | 
+			property type isPrimitive].
 
 	properties do: [ :p |
 			(p read: aFamixEntity) = (p read: otherFamixEntity) ifFalse: [
