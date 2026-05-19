@@ -31,6 +31,7 @@ FamixSimpleDiff >> compareEntity: aFamixEntity to: otherFamixEntity [
 
 	| properties relations diff isEquals allProperties |
 	isEquals := true.
+	allProperties := aFamixEntity mooseDescription allProperties.
 
 	"we compare the type of the entities. If we have not the same type, we add the difference in the list"
 	aFamixEntity class = otherFamixEntity class ifFalse: [
@@ -40,8 +41,6 @@ FamixSimpleDiff >> compareEntity: aFamixEntity to: otherFamixEntity [
 				        actualValue: otherFamixEntity class name.
 			self addDifference: diff.
 			^ self fail ].
-
-	allProperties := aFamixEntity mooseDescription allProperties.
 
 	"Comparing properties using Moose meta models" 
 	"We focus on entity with a primitive type (Boolean, Number, String). We exclude derived properties to not pollute difference list" 
