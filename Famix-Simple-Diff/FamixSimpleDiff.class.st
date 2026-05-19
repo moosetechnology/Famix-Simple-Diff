@@ -44,11 +44,11 @@ FamixSimpleDiff >> compareEntity: aFamixEntity to: otherFamixEntity [
 	allProperties := aFamixEntity mooseDescription allProperties.
 
 	"Comparing properties using Moose meta models" 
-	"We focus on entity with a primitive type (Boolean, Number, String). We exclude derived properties and the numberOfLinesOfCode to not pollute difference list" 
+	"We focus on entity with a primitive type (Boolean, Number, String). We exclude derived properties to not pollute difference list" 
 	properties := allProperties select: [ :property |
 			              property type isPrimitive and: [
 				              property isDerived not and: [
-					              property name ~= 'numberOfLinesOfCode' ] ] ].
+					              (property name beginsWith: 'numberOf') not ] ] ].
 
 	"we read property values, and create a difference if they are not equals"
 	properties do: [ :p |
