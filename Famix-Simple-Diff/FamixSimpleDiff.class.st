@@ -67,8 +67,9 @@ FamixSimpleDiff >> compareEntity: aFamixEntity to: otherFamixEntity [
 	"We focus on non primitive property (objects), and we exclude source anchors and derived property because they are not relevant to model comparison"
 	relations := allProperties select: [ :property |
 			             property type isPrimitive not and: [
-				          	property name ~= 'sourceAnchor' ] ].
-
+					             property name ~= 'sourceAnchor' and: [
+						             self shouldCompareRelation: property ] ] ].
+			
 	"debug, si clé pas dans dico on ajoute"
 	"key -> classe"
 	"value -> property et relation"
@@ -393,6 +394,23 @@ FamixSimpleDiff >> recursiveCompareEntity: entity1 with: entity2 [
 				^ false ] ].
 
 	^ true
+]
+
+{ #category : 'comparing' }
+FamixSimpleDiff >> shouldCompareRelation: aFM3Property [
+	"We use this filter to avoid comparing the same relation. Here is the idea:
+	. A relation without opposite is important, so we keep it.
+	. If we have a multivalued relation on a side, and a non multivalued relation on the other side, we keep the multivalued one.
+	. If both are multivalued, we check if one side is derived. In this case we keep the derived one."
+
+	| oppositeRelation |
+	aFM3Property hasOpposite ifFalse: [ ^ true ].
+
+	oppositeRelation := aFM3Property opposite.
+
+	^ aFM3Property isMultivalued ~= oppositeRelation isMultivalued
+		  ifTrue: [ aFM3Property isMultivalued ]
+		  ifFalse: [ aFM3Property isDerived ]
 ]
 
 { #category : 'sorting' }
