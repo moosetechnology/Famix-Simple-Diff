@@ -453,24 +453,7 @@ FamixSimpleDiff >> sortBlockFor: anEntity [
 { #category : 'sorting' }
 FamixSimpleDiff >> sortedChildren: entity [
 
-	| res |
-	res := childrenCache at: entity ifAbsentPut: [
-			       (entity containedEntities reject: [ :e |
-				        e isStub or: [ e name = '<Initializer>' ] ]) sorted: [ :a :b |
-					       | valA valB |
-					       valA := String streamContents: [ :s | a printOn: s ].
-					       valB := String streamContents: [ :s | b printOn: s ].
-					       valA = valB
-						       ifTrue: [
-								       a sourceAnchor
-									       ifNotNil: [
-											       b sourceAnchor
-												       ifNotNil: [ "case for two entities with identical printing string but different source anchor (several inner classes in the same parent for example)"
-													       a sourceAnchor endPos < b sourceAnchor endPos ]
-												       ifNil: [ valA < valB ] ]
-									       ifNil: [ valA < valB ] ]
-						       ifFalse: [ valA < valB ] ] ].
-
-
-	^ res
+	^ childrenCache at: entity ifAbsentPut: [
+			  (entity containedEntities reject: [ :e |
+				   e isStub or: [ e name = '<Initializer>' ] ]) sorted: self sort ]
 ]
