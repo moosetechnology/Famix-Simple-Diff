@@ -414,6 +414,24 @@ FamixSimpleDiff >> shouldCompareRelation: aFM3Property [
 ]
 
 { #category : 'sorting' }
+FamixSimpleDiff >> sort [
+	"We use mooseName to sort the entities.
+	If names are identical, we use sorceAnchor"
+
+	^ [ :a :b |
+		  | nameA nameB |
+		  nameA := a mooseName.
+		  nameB := b mooseName.
+
+		  nameA = nameB
+			  ifTrue: [
+					  (a sourceAnchor notNil and: [ b sourceAnchor notNil ])
+						  ifTrue: [ a sourceAnchor endPos < b sourceAnchor endPos ] "sorting the source anchors"
+						  ifFalse: [ a sourceAnchor notNil ] ]
+			  ifFalse: [ nameA < nameB ] ] "alphabetical order sorting"
+]
+
+{ #category : 'sorting' }
 FamixSimpleDiff >> sortBlock [
 
 	^ [ :a :b | a mooseName > b mooseName ]
