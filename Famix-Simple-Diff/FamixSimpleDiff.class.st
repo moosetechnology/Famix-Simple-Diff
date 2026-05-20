@@ -279,7 +279,7 @@ FamixSimpleDiff >> entityAtPath: indexPath inModel: model [
 { #category : 'accessing' }
 FamixSimpleDiff >> entityRoots: aFamixJavaModel [
 
-	| goodSortBlock excludedClasses |
+	| excludedClasses |
 	excludedClasses := {
 		                   FamixJavaWildcard.
 		                   FamixJavaAnnotationInstance.
@@ -292,8 +292,7 @@ FamixSimpleDiff >> entityRoots: aFamixJavaModel [
 				  rootEntities := aFamixJavaModel rootEntities reject: [ :entity |
 						                  entity name = '<Default Package>' or: [
 							                  excludedClasses includes: entity class ] ].
-				  goodSortBlock := self sortBlockFor: rootEntities anyOne.
-				  rootEntities sorted: goodSortBlock ]
+				  rootEntities sorted: self sort ]
 ]
 
 { #category : 'asserting' }
