@@ -6,7 +6,7 @@ on:
       - main
       - differences-list
       - differences-list-with-meta-model
-      - simplify_entity_comparison_using_meta_description
+      - debugging_code_for_performance_issue
 
   pull_request:
     branches:

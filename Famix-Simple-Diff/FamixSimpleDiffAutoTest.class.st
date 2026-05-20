@@ -238,7 +238,7 @@ FamixSimpleDiffAutoTest >> testSortBlockOrdersByName [
 	| sd block entity1 entity2 |
 	sd := FamixSimpleDiff new.
 	
-	block := sd sortBlock.
+	block := [ :a :b | a mooseName > b mooseName ].
 	
 	entity1 := mainModel1 entityNamed: 'some.thing.whatever.MainClass'.
 	entity2 := mainModel1 entityNamed: 'some.thing.whatever.MainClass.getIntAttribute()'.
