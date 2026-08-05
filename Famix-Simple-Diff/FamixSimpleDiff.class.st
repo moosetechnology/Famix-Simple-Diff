@@ -73,6 +73,7 @@ FamixSimpleDiff >> compareModel: aFamixModel to: aFamixModel2 [
 	"Initalization"
 	worklist := self initializeWorklistFrom: aFamixModel to: aFamixModel2.
 	visited := IdentitySet new.
+	differences := OrderedCollection new.
 
 	"doing tasks until the tasklist is empty"
 	^ self processWorklist: worklist visited: visited 
