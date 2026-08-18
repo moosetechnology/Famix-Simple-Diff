@@ -373,8 +373,8 @@ FamixSimpleDifManualTest >> testSortBlockOrdersNoNameRelationsBySourceAndTarget 
 	targetClassType := FamixJavaClass new name: 'void'.
 	
 	"creating relations"
-	typing1 := FamixJavaEntityTyping new typedEntity: ClassA; declaredType: targetClassType.
-	typing2 := FamixJavaEntityTyping new typedEntity: ClassB; declaredType: targetClassType.
+	typing1 := FamixJavaEntityTyping new typedEntity: classA; declaredType: targetClassType.
+	typing2 := FamixJavaEntityTyping new typedEntity: classB; declaredType: targetClassType.
 	
 	"filling model"
 	model add: classA.
