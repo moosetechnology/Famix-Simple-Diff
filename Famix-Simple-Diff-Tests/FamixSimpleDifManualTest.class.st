@@ -128,8 +128,8 @@ FamixSimpleDifManualTest >> testCompareEntityCorrectlyIdentifiesAddedNoNameRelat
 	
 	self assert: sd differences size equals: 1.
 	self assert: sd differences first class equals: FSDEntityAddition.
-	self assert: sd differences first expectedValue equals: typing2A.
-	self assert: sd differences first expectedValue typedEntity name equals: 'ClassA'.
+	self assert: sd differences first actualValue equals: typing2A.
+	self assert: sd differences first actualValue typedEntity name equals: 'ClassA'.
 ]
 
 { #category : 'tests' }
