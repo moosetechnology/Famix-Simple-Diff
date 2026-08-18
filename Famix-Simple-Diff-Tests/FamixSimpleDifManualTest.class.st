@@ -96,6 +96,43 @@ FamixSimpleDifManualTest >> testClearRemainingSuppressionWhenMultipleMethodHaveT
 ]
 
 { #category : 'tests' }
+FamixSimpleDifManualTest >> testCompareEntityCorrectlyIdentifiesDeletedNoNameRelation [
+	| sd model1 model2 target1 target2 typing1A typing1B typing2B classA classB |
+	
+	sd := FamixSimpleDiff new.
+	classA := FamixJavaClass new name: 'ClassA'.
+	classB := FamixJavaClass new name: 'ClassB'.
+	
+	"Model 1: 2 typing with void -> ClassA and ClassB "
+	model1 := FamixJavaModel new.
+	target1 := FamixJavaClass new name: 'void'.
+	typing1A := FamixJavaEntityTyping new typedEntity: classA ; declaredType: target1.
+	typing1B := FamixJavaEntityTyping new typedEntity: classB ; declaredType: target1.
+	
+	"Model 2: 1 typing with void -> ClassB "
+	model2 := FamixJavaModel new.
+	target2 := FamixJavaClass new name: 'void'.
+	typing2B := FamixJavaEntityTyping new typedEntity: classB ; declaredType: target2.
+	
+	model1 add: classA.
+	model1 add: classB.
+	model1 add: target1.
+	model1 add: typing1A. 
+	model1 add: typing1B.
+	
+	model2 add: classB.
+	model2 add: target2.
+	model2 add: typing2B.
+	
+	self deny: (sd compareEntity: target1 to: target2).
+	
+	self assert: sd differences size equals: 1.
+	self assert: sd differences first class equals: FSDEntityDeletion.
+	self assert: sd differences first expectedValue equals: typing1A.
+	self assert: sd differences first expectedValue typedEntity name equals: 'ClassA'.
+]
+
+{ #category : 'tests' }
 FamixSimpleDifManualTest >> testCompareEntityToReturnsFalseAndRecordsDiffWhenDifferentClasses [
     | sd class1 class2 diff |
     sd := FamixSimpleDiff new.
