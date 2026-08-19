@@ -508,12 +508,13 @@ FamixSimpleDiff >> shouldSkipComparisonEntity: entity1 with: entity2 [
 { #category : 'sorting' }
 FamixSimpleDiff >> sort [
 	"We use mooseName to sort the entities.
+	We use the string builded by the method sortNameFor: to sort the relation having 'noname' as a mooseName
 	If names are identical, we use sorceAnchor"
 
 	^ [ :a :b |
 		  | nameA nameB |
-		  nameA := a mooseName.
-		  nameB := b mooseName.
+		  nameA := self sortNameFor: a.
+		  nameB := self sortNameFor: b.
 
 		  nameA = nameB
 			  ifTrue: [
