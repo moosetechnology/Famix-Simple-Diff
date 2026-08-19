@@ -111,8 +111,10 @@ FamixSimpleDifManualTest >> testCompareEntityCorrectlyIdentifiesAddedNoNameRelat
 	"Model 2: 2 typing with void -> methodA and methodB "
 	model2 := FamixJavaModel new.
 	target2 := FamixJavaClass new name: 'void'.
-	typing2A := FamixJavaEntityTyping new typedEntity: methodA ; declaredType: target2.
+	
+	"typings"
 	typing2B := FamixJavaEntityTyping new typedEntity: methodB ; declaredType: target2.
+	typing2A := FamixJavaEntityTyping new typedEntity: methodA ; declaredType: target2.
 	
 	model1 add: methodB.
 	model1 add: target1. 
@@ -143,8 +145,9 @@ FamixSimpleDifManualTest >> testCompareEntityCorrectlyIdentifiesDeletedNoNameRel
 	"Model 1: 2 typing with void -> methodA and methodB "
 	model1 := FamixJavaModel new.
 	target1 := FamixJavaClass new name: 'void'.
-	typing1A := FamixJavaEntityTyping new typedEntity: methodA ; declaredType: target1.
+	
 	typing1B := FamixJavaEntityTyping new typedEntity: methodB ; declaredType: target1.
+	typing1A := FamixJavaEntityTyping new typedEntity: methodA ; declaredType: target1.
 	
 	"Model 2: 1 typing with void -> methodB "
 	model2 := FamixJavaModel new.
