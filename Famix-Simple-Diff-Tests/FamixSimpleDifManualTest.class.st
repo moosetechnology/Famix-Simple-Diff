@@ -363,29 +363,28 @@ FamixSimpleDifManualTest >> testCompareEntityToReturnsTrueWhenSameClassesAndSame
 { #category : 'tests' }
 FamixSimpleDifManualTest >> testSortBlockOrdersNoNameRelationsBySourceAndTarget [
 
-	| sd model classA classB targetClassType typing1 typing2 sortBlock |
+	| sd model methodA methodB targetClassType typing1 typing2 sortBlock |
 	sd := FamixSimpleDiff new.
 	model := FamixJavaModel new.
 	
 	"creating classes"
-	classA := FamixJavaClass new name: 'ClassA'.
-	classB := FamixJavaClass new name: 'ClassB'.
+	methodA := FamixJavaMethod new name: 'methodA'.
+	methodB := FamixJavaMethod new name: 'methodB'.
 	targetClassType := FamixJavaClass new name: 'void'.
 	
 	"creating relations"
-	typing1 := FamixJavaEntityTyping new typedEntity: classA; declaredType: targetClassType.
-	typing2 := FamixJavaEntityTyping new typedEntity: classB; declaredType: targetClassType.
+	typing1 := FamixJavaEntityTyping new typedEntity: methodA; declaredType: targetClassType.
+	typing2 := FamixJavaEntityTyping new typedEntity: methodB; declaredType: targetClassType.
 	
 	"filling model"
-	model add: classA.
-	model add: classB.
+	model add: methodA.
+	model add: methodB.
 	model add: targetClassType.
 	model add: typing1.
 	model add: typing2.
 	
 	"sort block"
 	sortBlock := sd sort.
-	
 	self assert: (sortBlock value: typing1 value: typing2).
 	self deny: (sortBlock value: typing2 value: typing1).
 ]
