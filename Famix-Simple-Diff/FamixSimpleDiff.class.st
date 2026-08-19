@@ -535,14 +535,14 @@ FamixSimpleDiff >> sortNameFor: aFamixEntity [
 	name := aFamixEntity mooseName asString.
 
 	"we have a relation"
-	name = 'noname'
+	^ name = 'noname'
 		ifTrue: [
 				String streamContents: [ :stream |
 						| properties |
 						stream << 'noname'.
 
 						"We get all properties that point to other entities"
-						properties := aFamixEntity metadescription select: [ :prop |
+						properties := aFamixEntity metadescription allProperties select: [ :prop |
 							              prop isMultivalued not and: [
 								              prop type isPrimitive not ] ].
 
