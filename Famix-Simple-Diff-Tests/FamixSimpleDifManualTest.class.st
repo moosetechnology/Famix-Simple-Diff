@@ -134,30 +134,30 @@ FamixSimpleDifManualTest >> testCompareEntityCorrectlyIdentifiesAddedNoNameRelat
 
 { #category : 'tests' }
 FamixSimpleDifManualTest >> testCompareEntityCorrectlyIdentifiesDeletedNoNameRelation [
-	| sd model1 model2 target1 target2 typing1A typing1B typing2B classA classB |
+	| sd model1 model2 target1 target2 typing1A typing1B typing2B methodA methodB |
 	
 	sd := FamixSimpleDiff new.
-	classA := FamixJavaClass new name: 'ClassA'.
-	classB := FamixJavaClass new name: 'ClassB'.
+	methodA := FamixJavaMethod new name: 'methodA'.
+	methodB := FamixJavaMethod new name: 'methodB'.
 	
-	"Model 1: 2 typing with void -> ClassA and ClassB "
+	"Model 1: 2 typing with void -> methodA and methodB "
 	model1 := FamixJavaModel new.
 	target1 := FamixJavaClass new name: 'void'.
-	typing1A := FamixJavaEntityTyping new typedEntity: classA ; declaredType: target1.
-	typing1B := FamixJavaEntityTyping new typedEntity: classB ; declaredType: target1.
+	typing1A := FamixJavaEntityTyping new typedEntity: methodA ; declaredType: target1.
+	typing1B := FamixJavaEntityTyping new typedEntity: methodB ; declaredType: target1.
 	
-	"Model 2: 1 typing with void -> ClassB "
+	"Model 2: 1 typing with void -> methodB "
 	model2 := FamixJavaModel new.
 	target2 := FamixJavaClass new name: 'void'.
-	typing2B := FamixJavaEntityTyping new typedEntity: classB ; declaredType: target2.
+	typing2B := FamixJavaEntityTyping new typedEntity: methodB ; declaredType: target2.
 	
-	model1 add: classA.
-	model1 add: classB.
+	model1 add: methodA.
+	model1 add: methodB.
 	model1 add: target1.
 	model1 add: typing1A. 
 	model1 add: typing1B.
 	
-	model2 add: classB.
+	model2 add: methodB.
 	model2 add: target2.
 	model2 add: typing2B.
 	
@@ -166,7 +166,7 @@ FamixSimpleDifManualTest >> testCompareEntityCorrectlyIdentifiesDeletedNoNameRel
 	self assert: sd differences size equals: 1.
 	self assert: sd differences first class equals: FSDEntityDeletion.
 	self assert: sd differences first expectedValue equals: typing1A.
-	self assert: sd differences first expectedValue typedEntity name equals: 'ClassA'.
+	self assert: sd differences first expectedValue typedEntity name equals: 'methodA'.
 ]
 
 { #category : 'tests' }
