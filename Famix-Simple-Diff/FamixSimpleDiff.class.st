@@ -181,8 +181,9 @@ FamixSimpleDiff >> compareToManyRelation: val1 actual: val2 target: anEntity [
 			element1 := stream1 peek.
 			element2 := stream2 peek.
 
-			name1 := element1 mooseName.
-			name2 := element2 mooseName.
+			"We use the personalised signature to prevent from 'nonameEntities' "
+			name1 := self sortNameFor: element1.
+			name2 := self sortNameFor: element2.
 
 			name1 = name2
 				ifTrue: [ "move forward both ptr if identicals"
@@ -541,14 +542,16 @@ FamixSimpleDiff >> sortNameFor: aFamixEntity [
 						stream << 'noname'.
 
 						"We get all properties that point to other entities"
-						properties := aFamixEntity mooseDescription select: [ :prop |
+						properties := aFamixEntity metadescription select: [ :prop |
 							              prop isMultivalued not and: [
 								              prop type isPrimitive not ] ].
 
 						"We sort the properties to build the string"
 						(properties sorted: [ :p1 :p2 | p1 name < p2 name ]) do: [ :prop |
 								(prop getRawFrom: aFamixEntity) ifNotNil: [ :linkedEntity |
-										stream << '-'; << linkedEntity mooseName asString ] ] ] ]
+										stream
+											<< '-';
+											<< linkedEntity mooseName asString ] ] ] ]
 		ifFalse: [ name ]
 ]
 
