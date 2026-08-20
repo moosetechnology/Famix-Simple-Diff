@@ -12,7 +12,8 @@ Class {
 		'roots',
 		'childrenCache',
 		'debug',
-		'differences'
+		'differences',
+		'shouldCompareOppositeRelation'
 	],
 	#category : 'Famix-Simple-Diff',
 	#package : 'Famix-Simple-Diff'
@@ -72,6 +73,7 @@ FamixSimpleDiff >> compareModel: aFamixModel to: aFamixModel2 [
 	"Initalization"
 	worklist := self initializeWorklistFrom: aFamixModel to: aFamixModel2.
 	visited := IdentitySet new.
+	differences := OrderedCollection new.
 
 	"doing tasks until the tasklist is empty"
 	^ self processWorklist: worklist visited: visited 
@@ -193,8 +195,9 @@ FamixSimpleDiff >> compareToManyRelation: val1 actual: val2 target: anEntity [
 						name1 < name2
 							ifTrue: [ "deletion case"
 									diff := FSDEntityDeletion
-							        createDifference: anEntity
-							        expectedValue: element1.
+							        	createDifference: anEntity
+							        	expectedValue: element1.
+							      diff indexInParent: stream1 position.
 									
 									self addDifference: diff.
 									isEquals := false.
@@ -203,6 +206,7 @@ FamixSimpleDiff >> compareToManyRelation: val1 actual: val2 target: anEntity [
 									diff := FSDEntityAddition
 										        createDifference: anEntity
 										        actualValue: element2.
+									diff indexInParent: stream2 position.
 
 									self addDifference: diff.
 									isEquals := false.
@@ -346,14 +350,24 @@ FamixSimpleDiff >> finishRemaining: aStream diffCreation: aDifferenceCreation [
 FamixSimpleDiff >> finishRemainingAdditionOf: aStream target: anEntity [
 
 	^ self finishRemaining: aStream diffCreation: [ :val |
-		  FSDEntityAddition createDifference: anEntity actualValue: val ]
+			  | diff |
+			  diff := FSDEntityAddition
+				          createDifference: anEntity
+				          actualValue: val.
+			  diff indexInParent: aStream position.
+			  diff ]
 ]
 
 { #category : 'accessing' }
 FamixSimpleDiff >> finishRemainingDeletionOf: aStream target: anEntity [
 
 	^ self finishRemaining: aStream diffCreation: [ :val |
-		  FSDEntityDeletion createDifference: anEntity expectedValue: val ]
+			  | diff |
+			  diff := FSDEntityDeletion
+				          createDifference: anEntity
+				          expectedValue: val.
+			  diff indexInParent: aStream position.
+			  diff ]
 ]
 
 { #category : 'initialization' }
@@ -362,6 +376,11 @@ FamixSimpleDiff >> initialize [
 	super initialize.
 	debug := false.
 	childrenCache := LRUCache new maximumWeight: 100.
+	
+	"By default we assume that opposite relations are ok if the main relation is ok.
+	This makes diffing faster, but less precise.
+	However, some model bugs come appear here, so check it optionally"
+	shouldCompareOppositeRelation := false
 ]
 
 { #category : 'comparing' }
@@ -471,6 +490,18 @@ FamixSimpleDiff >> processWorklist: worklist visited: visited [
 			  differences isEmpty ]
 ]
 
+{ #category : 'accessing' }
+FamixSimpleDiff >> shouldCompareOppositeRelation [
+
+	^ shouldCompareOppositeRelation
+]
+
+{ #category : 'accessing' }
+FamixSimpleDiff >> shouldCompareOppositeRelation: anObject [
+
+	shouldCompareOppositeRelation := anObject
+]
+
 { #category : 'comparing' }
 FamixSimpleDiff >> shouldCompareRelation: aFM3Property [
 	"We use this filter to avoid comparing the same relation. Here is the idea:
@@ -479,10 +510,10 @@ FamixSimpleDiff >> shouldCompareRelation: aFM3Property [
 	. If both are multivalued, we check if one side is derived. In this case we keep the derived one."
 
 	"we want to skip derived relations without opposites"
+	
+	(shouldCompareOppositeRelation and: [ aFM3Property hasOpposite ]) ifTrue: [ ^ true ].
 
 	(aFM3Property isDerived and: [ aFM3Property hasOpposite not ]) ifTrue: [ ^ false ].
-
-	aFM3Property hasOpposite ifFalse: [ ^ true ].
 
 	^ aFM3Property isMultivalued ~= aFM3Property opposite isMultivalued
 		  ifTrue: [ aFM3Property isMultivalued ]

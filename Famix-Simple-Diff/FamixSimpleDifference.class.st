@@ -13,7 +13,8 @@ Class {
 	#instVars : [
 		'entity',
 		'expectedValue',
-		'actualValue'
+		'actualValue',
+		'indexInParent'
 	],
 	#category : 'Famix-Simple-Diff',
 	#package : 'Famix-Simple-Diff'
@@ -59,6 +60,18 @@ FamixSimpleDifference >> expectedValue [
 FamixSimpleDifference >> expectedValue: anObject [
 
 	expectedValue := anObject
+]
+
+{ #category : 'accessing' }
+FamixSimpleDifference >> indexInParent [
+
+	^ indexInParent
+]
+
+{ #category : 'accessing' }
+FamixSimpleDifference >> indexInParent: anObject [
+
+	indexInParent := anObject
 ]
 
 { #category : 'printing' }
