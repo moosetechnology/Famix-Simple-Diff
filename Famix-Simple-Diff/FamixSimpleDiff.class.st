@@ -562,28 +562,30 @@ FamixSimpleDiff >> sortNameFor: aFamixEntity [
 	Some entities like the relations have 'noname' as a name
 	To avoid that, we generate an unique name following the form : 'noname-source-target' "
 
-	| name |
-	name := aFamixEntity mooseName asString.
+	^ aFamixEntity cacheAt: #fsdRelationalName ifAbsentPut: [
+		| name |
+		name := aFamixEntity mooseName asString.
 
-	"we have a relation"
-	^ name = 'noname'
-		ifTrue: [
-				String streamContents: [ :stream |
-						| properties |
-						stream << 'noname'.
+		"we have a relation"
+		name = 'noname'
+			ifTrue: [
+					String streamContents: [ :stream |
+							| properties |
+							stream << 'noname'.
 
-						"We get all properties that point to other entities"
-						properties := aFamixEntity metadescription allProperties select: [ :prop |
-							              prop isMultivalued not and: [
-								              prop type isPrimitive not ] ].
+							"We get all properties that point to other entities"
+							properties := aFamixEntity metadescription allProperties select: [ :prop |
+								              prop isMultivalued not and: [
+									              prop type isPrimitive not ] ].
 
-						"We sort the properties to build the string"
-						(properties sorted: [ :p1 :p2 | p1 name < p2 name ]) do: [ :prop |
-								(prop getRawFrom: aFamixEntity) ifNotNil: [ :linkedEntity |
-										stream
-											<< '-';
-											<< linkedEntity mooseName asString ] ] ] ]
-		ifFalse: [ name ]
+							"We sort the properties to build the string"
+							(properties sorted: [ :p1 :p2 | p1 name < p2 name ]) do: [ :prop |
+									(prop getRawFrom: aFamixEntity) ifNotNil: [ :linkedEntity |
+											stream
+												<< '-';
+												<< linkedEntity mooseName asString ] ] ] ]
+			ifFalse: [ name ]
+		]
 ]
 
 { #category : 'sorting' }
