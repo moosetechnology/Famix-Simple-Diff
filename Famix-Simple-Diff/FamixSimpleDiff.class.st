@@ -581,9 +581,7 @@ FamixSimpleDiff >> sortNameFor: aFamixEntity [
 							"We sort the properties to build the string"
 							(properties sorted: [ :p1 :p2 | p1 name < p2 name ]) do: [ :prop |
 									(prop getRawFrom: aFamixEntity) ifNotNil: [ :linkedEntity |
-											stream
-												<< '-';
-												<< linkedEntity mooseName asString ] ] ] ]
+											stream << '-'; << linkedEntity mooseName asString ] ] ] ]
 			ifFalse: [ name ]
 		]
 ]
