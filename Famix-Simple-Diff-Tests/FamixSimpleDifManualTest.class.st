@@ -96,6 +96,75 @@ FamixSimpleDifManualTest >> testClearRemainingSuppressionWhenMultipleMethodHaveT
 ]
 
 { #category : 'tests' }
+FamixSimpleDifManualTest >> testCompareEntityCorrectlyIdentifiesAddedNoNameRelation [
+
+	| sd originalModel modifiedModel originalVoidType modifiedVoidType originalTypingB modifiedTypingA modifiedTypingB originalMethodB modifiedMethodA modifiedMethodB |
+	sd := FamixSimpleDiff new.
+
+	"Model 1: 1 typing with void -> methodB "
+	originalModel := FamixJavaModel new.
+	originalVoidType := FamixJavaClass new name: 'void'.
+	originalMethodB := FamixJavaMethod new name: 'methodB'.
+	
+	originalTypingB := FamixJavaEntityTyping new typedEntity: originalMethodB; declaredType: originalVoidType.
+
+	"Model 2: 2 typing with void -> methodA and methodB "
+	modifiedModel := FamixJavaModel new.
+	modifiedMethodA := FamixJavaMethod new name: 'methodA'.
+	modifiedMethodB := FamixJavaMethod new name: 'methodB'.
+	modifiedVoidType := FamixJavaClass new name: 'void'.
+	
+	modifiedTypingB := FamixJavaEntityTyping new typedEntity: modifiedMethodB; declaredType: modifiedVoidType.
+		
+	modifiedTypingA := FamixJavaEntityTyping new typedEntity: modifiedMethodA; declaredType: modifiedVoidType.
+
+	"Filling models"
+	originalModel addAll: {originalMethodB . originalVoidType . originalTypingB }.
+	modifiedModel addAll: {modifiedMethodA . modifiedMethodB . modifiedVoidType . modifiedTypingA . modifiedTypingB }.
+
+	"assertions"
+	self deny: (sd compareEntity: originalVoidType to: modifiedVoidType).
+
+	self assert: sd differences size equals: 1.
+	self assert: sd differences first class equals: FSDEntityAddition.
+	self assert: sd differences first actualValue equals: modifiedTypingA.
+	self assert: sd differences first actualValue typedEntity name equals: 'methodA'
+]
+
+{ #category : 'tests' }
+FamixSimpleDifManualTest >> testCompareEntityCorrectlyIdentifiesDeletedNoNameRelation [
+
+	| sd originalModel modifiedModel originalVoidType modifiedVoidType originalTypingA originalTypingB modifiedTypingB originalMethodA originalMethodB modifiedMethodB |
+	sd := FamixSimpleDiff new.
+
+	"Model 1: 2 typing with void ->methodA and  methodB "
+	originalModel := FamixJavaModel new.
+	originalMethodA := FamixJavaMethod new name: 'methodA'.
+	originalMethodB := FamixJavaMethod new name: 'methodB'.
+	originalVoidType := FamixJavaClass new name: 'void'.
+	originalTypingB := FamixJavaEntityTyping new typedEntity: originalMethodB; declaredType: originalVoidType.
+	originalTypingA := FamixJavaEntityTyping new typedEntity: originalMethodA; declaredType: originalVoidType.
+
+	"Model 2: 1 typing with void -> methodB "
+	modifiedModel := FamixJavaModel new.
+	modifiedMethodB := FamixJavaMethod new name: 'methodB'.
+	modifiedVoidType := FamixJavaClass new name: 'void'.
+	modifiedTypingB := FamixJavaEntityTyping new typedEntity: modifiedMethodB; declaredType: modifiedVoidType.
+
+	"Filling models"
+	originalModel addAll: { originalMethodA . originalMethodB . originalVoidType . originalTypingA . originalTypingB }.
+	modifiedModel addAll: { modifiedMethodB . modifiedVoidType . modifiedTypingB }.
+
+	"assertions"
+	self deny: (sd compareEntity: originalVoidType to: modifiedVoidType).
+
+	self assert: sd differences size equals: 1.
+	self assert: sd differences first class equals: FSDEntityDeletion.
+	self assert: sd differences first expectedValue equals: originalTypingA.
+	self assert: sd differences first expectedValue typedEntity name equals: 'methodA'
+]
+
+{ #category : 'tests' }
 FamixSimpleDifManualTest >> testCompareEntityToReturnsFalseAndRecordsDiffWhenDifferentClasses [
     | sd class1 class2 diff |
     sd := FamixSimpleDiff new.
@@ -284,6 +353,31 @@ FamixSimpleDifManualTest >> testCompareEntityToReturnsTrueWhenSameClassesAndSame
 	
 	self assert: (sd compareEntity: class1 to: class2).
 	self assert: sd differences isEmpty.
+]
+
+{ #category : 'tests' }
+FamixSimpleDifManualTest >> testSortBlockOrdersNoNameRelationsBySourceAndTarget [
+
+	| sd model methodA methodB targetClassType typing1 typing2 sortBlock |
+	sd := FamixSimpleDiff new.
+	model := FamixJavaModel new.
+	
+	"creating classes"
+	methodA := FamixJavaMethod new name: 'methodA'.
+	methodB := FamixJavaMethod new name: 'methodB'.
+	targetClassType := FamixJavaClass new name: 'void'.
+	
+	"creating relations"
+	typing1 := FamixJavaEntityTyping new typedEntity: methodA; declaredType: targetClassType.
+	typing2 := FamixJavaEntityTyping new typedEntity: methodB; declaredType: targetClassType.
+	
+	"filling model"
+	model addAll: {methodA . methodB . targetClassType . typing1 . typing2}.
+	
+	"sort block"
+	sortBlock := sd sort.
+	self assert: (sortBlock value: typing1 value: typing2).
+	self deny: (sortBlock value: typing2 value: typing1).
 ]
 
 { #category : 'tests' }

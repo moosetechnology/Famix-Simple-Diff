@@ -183,8 +183,9 @@ FamixSimpleDiff >> compareToManyRelation: val1 actual: val2 target: anEntity [
 			element1 := stream1 peek.
 			element2 := stream2 peek.
 
-			name1 := element1 mooseName.
-			name2 := element2 mooseName.
+			"We use the personalised signature to prevent from 'nonameEntities' "
+			name1 := self sortNameFor: element1.
+			name2 := self sortNameFor: element2.
 
 			name1 = name2
 				ifTrue: [ "move forward both ptr if identicals"
@@ -539,12 +540,13 @@ FamixSimpleDiff >> shouldSkipComparisonEntity: entity1 with: entity2 [
 { #category : 'sorting' }
 FamixSimpleDiff >> sort [
 	"We use mooseName to sort the entities.
+	We use the string builded by the method sortNameFor: to sort the relation having 'noname' as a mooseName
 	If names are identical, we use sorceAnchor"
 
 	^ [ :a :b |
 		  | nameA nameB |
-		  nameA := a mooseName.
-		  nameB := b mooseName.
+		  nameA := self sortNameFor: a.
+		  nameB := self sortNameFor: b.
 
 		  nameA = nameB
 			  ifTrue: [
@@ -552,6 +554,36 @@ FamixSimpleDiff >> sort [
 						  ifTrue: [ a sourceAnchor endPos < b sourceAnchor endPos ] "sorting the source anchors"
 						  ifFalse: [ a sourceAnchor notNil ] ]
 			  ifFalse: [ nameA < nameB ] ] "alphabetical order sorting"
+]
+
+{ #category : 'sorting' }
+FamixSimpleDiff >> sortNameFor: aFamixEntity [
+	"Creates and put in cache a specific name for generic entities
+	Some entities like the relations have 'noname' as a name
+	To avoid that, we generate an unique name following the form : 'noname-source-target' "
+
+	^ aFamixEntity cacheAt: #fsdRelationalName ifAbsentPut: [
+		| name |
+		name := aFamixEntity mooseName asString.
+
+		"we have a relation"
+		name = 'noname'
+			ifTrue: [
+					String streamContents: [ :stream |
+							| properties |
+							stream << 'noname'.
+
+							"We get all properties that point to other entities"
+							properties := aFamixEntity metadescription allProperties select: [ :prop |
+								              prop isMultivalued not and: [
+									              prop type isPrimitive not ] ].
+
+							"We sort the properties to build the string"
+							(properties sorted: [ :p1 :p2 | p1 name < p2 name ]) do: [ :prop |
+									(prop getRawFrom: aFamixEntity) ifNotNil: [ :linkedEntity |
+											stream << '-'; << linkedEntity mooseName asString ] ] ] ]
+			ifFalse: [ name ]
+		]
 ]
 
 { #category : 'sorting' }
